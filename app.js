@@ -22,6 +22,8 @@ const app = express();
 //
 // ⚠️ **最後不需呼叫 app.listen()** — 這個部分交由 server.js 負責（分離「組裝」跟「啟動」，這樣 test.js 可以 supertest 直接戳 app、不佔 port）。
 
+app.use(cors());
+app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-
+app.use('/auth',authRouter)
 module.exports = app;
