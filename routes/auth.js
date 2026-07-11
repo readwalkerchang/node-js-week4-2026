@@ -32,6 +32,28 @@ const router = express.Router();
 /* 作答區
 router.METHOD('PATH', async (req, res) => { ... });
 */
+router.post('/register',async(req,res) => {
+    const {email, password} = req.body;
+
+    if(!password || !email || !password){
+        return  res.status(400).json({ status: 'false', message:  '缺 email 或 password' })
+    }
+    if(users.find((user) => user.email === email)){
+        return  res.status(400).json({ status: 'false', message:  '此email已被註冊' })
+    }
+
+    const salt = await bcrypt.genSalt(9);
+    const hashedPassword = await bcrypt.hash(password,salt);
+    const newUser = {
+        id:nextId,
+        email,
+        password: hashedPassword
+    }
+    users.push(newUser);
+    nextId++
+    return res.status(201).json({status: 'success', message:  '新帳號已註冊' ,user:{email} });
+
+})
 
 // ───────────────────────────────────────────────────────────
 // TODO 任務三：POST /login
