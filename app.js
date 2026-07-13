@@ -26,4 +26,10 @@ app.use(cors());
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use('/auth',authRouter)
+app.use((req, res) => {
+    return res.status(404).json({ status: 'false', message:  '無此路由資訊' });
+})
+app.use((err, req, res, next) => {
+    return res.status(500).json({ err: err.name, message: err.message });
+})
 module.exports = app;

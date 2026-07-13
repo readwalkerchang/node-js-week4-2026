@@ -71,7 +71,24 @@ router.post('/register',async(req,res) => {
 /* 作答區
 router.METHOD('PATH', async (req, res) => { ... });
 */
+router.post('/login', async (req, res) => {
+    const {email, password} = req.body;
+    const user = users.find((user) => user.email === email);
+    if(!user){
+        return  res.status(401).json({ status: 'false', message:  '帳號或密碼錯誤' })
+    }
+    const passwordCheck = await bcrypt.compare(password, user.password);
+    if(!passwordCheck){
+        return  res.status(401).json({ status: 'false', message:  '帳號或密碼錯誤' })
+    }
 
+    const token = jwt.sign(
+        {id:user.id, email:user.email}, 
+        process.env.JWT_SECRET, 
+        { expiresIn: '30d' });
+    return  res.status(200).json({ status: 'success', token })
+
+})
 // ───────────────────────────────────────────────────────────
 // TODO 任務四：GET /me（受保護）
 // ───────────────────────────────────────────────────────────
